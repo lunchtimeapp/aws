@@ -21,7 +21,6 @@ const USERS_COLLECTION = 'users';
  */
 exports.lambdaHandler = async (event, context) => {
 
-  console.log(context);
   // First check that required configuration is available, to fail fast.
   const uri = process.env[MONGO_URI];
   if (!uri) throw new Error(`Missing ${MONGO_URI} environment variable.`);
@@ -41,8 +40,8 @@ exports.lambdaHandler = async (event, context) => {
 
     const db = mongo.db(MONGO_DB);
     const users = db.collection(USERS_COLLECTION);
-    console.log(`Looking up federated '${federatedProviderTypeLower}' user '${federatedUserId}'.`);
-    const user = await users.findOne({
+    console.log(`LOOKUP ${federatedProviderTypeLower}:${federatedUserId}`);
+    let user = await users.findOne({
       'auth.federations': {
         $elemMatch: {
           provider: federatedProviderTypeLower,
@@ -50,9 +49,11 @@ exports.lambdaHandler = async (event, context) => {
         }
       }
     });
-    console.log('User:', user);
 
-    if (!user) {
+    if (user) {
+      console.log(`EXISTING ${user.uid}`);
+    }
+    else {
       // Check the input data.
       if (!event.userPoolId) throw new Error('Missing User Pool ID in event.');
       const identityProvider = `cognito:${event.userPoolId}`;
@@ -83,14 +84,21 @@ exports.lambdaHandler = async (event, context) => {
         },
         createdAt: new Date().toISOString()
       };
-      console.log('New user:', JSON.stringify(newUser, null, 2));
+
+      const insertResult = await users.insertOne(newUser);
+      if (!insertResult.result.ok) {
+        console.warn('Insert result:', JSON.stringify(insertResult, null, 2));
+        throw new Error(`Failed storing new user with sub '${attrs.sub}'.`);
+      }
+      user = insertResult.ops[0];
+      console.log(`CREATED ${user.uid}`);
     }
 
-    // Test overriding tokens.
+    // Set additional tokens and remove unused ones.
     event.response = {
       claimsOverrideDetails: {
         claimsToAddOrOverride: {
-          uid: 'TODO'
+          uid: user.uid
         },
         claimsToSuppress: [
           'email_verified',
@@ -102,6 +110,5 @@ exports.lambdaHandler = async (event, context) => {
   finally {
     await mongo.close();
   }
-
   return event;
 }
