@@ -1,7 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: 'User related logic for Lunchtime app'
-  
+
+Parameters:
+  MongoUri:
+    Type: String
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -26,6 +30,9 @@ Resources:
       CodeUri: pre-token-generation/
       Handler: fn.lambdaHandler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          MONGO_URI: !Ref MongoUri
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

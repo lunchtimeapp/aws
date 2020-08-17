@@ -5,6 +5,28 @@ Application using the Serverless Application Model (SAM).
 ## Notes
 
 - [How to pass environment variables with SAM deploy](https://github.com/awslabs/aws-sam-cli/issues/1163)
+- Prerequisites:
+  - jq: https://stedolan.github.io/jq/
+
+## Environment variables
+
+Stored in `params.json` using this example format. Note that the file is not checked into the repo.
+
+```json
+{
+  "MongoUri": "mongodb://uri"
+  // ...
+}
+```
+
+- Deploy:  
+  ```bash
+  > sam deploy --parameter-overrides $(jq -r 'to_entries[] | "\(.key)=\(.value)"' params.json)
+  ````
+- Invoke function:  
+  ```bash
+  > sam local invoke PreTokenGeneration --event events/pre-token-generation.json --parameter-overrides $(jq -r 'to_entries[] | "\(.key)=\(.value)"' params.json)
+  ```
 
 ## Template Introduction
 

@@ -1,0 +1,33 @@
+{
+  "version": "1",
+  "triggerSource": "TokenGeneration_HostedAuth",
+  "region": "us-west-2",
+  "userPoolId": "us-west-2_IVsub9c4I",
+  "userName": "facebook_10157005697690966",
+  "callerContext": {
+    "awsSdkVersion": "aws-sdk-unknown-unknown",
+    "clientId": "6bpikq0f9cvmh31vl85sjcsnv9"
+  },
+  "request": {
+    "userAttributes": {
+      "sub": "2ac569b6-ca90-4b93-b54d-7b8011e68355",
+      "email_verified": "false",
+      "identities": "[{\"userId\":\"10157005697690966\",\"providerName\":\"Facebook\",\"providerType\":\"Facebook\",\"issuer\":null,\"primary\":true,\"dateCreated\":1597485807587}]",
+      "cognito:user_status": "EXTERNAL_PROVIDER",
+      "name": "Bart Verkoeijen",
+      "given_name": "Bart",
+      "family_name": "Verkoeijen",
+      "email": "bart.verkoeijen@gmail.com"
+    },
+    "groupConfiguration": {
+      "groupsToOverride": [
+        null
+      ],
+      "iamRolesToOverride": [],
+      "preferredRole": null
+    }
+  },
+  "response": {
+    "claimsOverrideDetails": null
+  }
+}
