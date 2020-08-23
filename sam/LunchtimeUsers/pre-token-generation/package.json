@@ -8,15 +8,15 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0",
     "mongodb": "^3.6.0",
     "uuid": "^8.3.0"
   },
   "scripts": {
-    "test": "mocha tests/unit/"
+    "test": "jest"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.1.4"
+    "@shelf/jest-mongodb": "^1.2.2",
+    "@types/jest": "^26.0.10",
+    "jest": "^26.4.2"
   }
 }
